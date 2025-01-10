@@ -1,42 +1,34 @@
 {pkgs, ...}: {
-  packages = with pkgs.vimPlugins; [conform-nvim neogit oil-nvim nvim-lint];
-  lua = let
-    ruff = "${pkgs.ruff}/bin/ruff";
-    stylua = "${pkgs.stylua}/bin/stylua";
-    alejandra = "${pkgs.alejandra}/bin/alejandra";
-    isort = "${pkgs.isort}/bin/isort";
-  in
+  packages = with pkgs.vimPlugins; [
+    neogit
+    oil-nvim
+    comment-nvim
+    nvim-autopairs
+    nvim-surround
+    vim-indent-object
+    gitsigns-nvim
+    todo-comments-nvim
+    nvim-web-devicons
+    vim-visual-multi
+    typst-preview-nvim
+  ];
+  lua =
     #lua
     ''
-      require("conform").setup({
-        formatters = {
-          ruff_format = {
-            command = "${ruff}",
-            prepend_args = {"format"},
-          },
-          stylua = {command = "${stylua}"},
-          alejandra = {command = "${alejandra}"},
-          isort = {command = "${isort}"},
-        },
-        formatters_by_ft = {
-          lua = {"stylua"},
-          nix = {"alejandra"},
-          python = {"isort", "ruff_format"},
-          ["*"] = {"trim_whitespace"},
-        },
-      })
-
-      require("lint").linters_by_ft = {python = { "ruff" }}
-      require("lint").linters = {ruff = {cmd = "${ruff}"}}
-      vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-        callback = function()
-          require("lint").try_lint()
-        end,
-      })
-
       require("neogit").setup()
       vim.keymap.set("n", "<space>g", "<cmd>Neogit<cr>")
+
       require("oil").setup()
       vim.keymap.set("n", "-", "<cmd>Oil<cr>")
+
+      require("Comment").setup()
+      require("nvim-autopairs").setup()
+      require("nvim-surround").setup()
+      require("typst-preview").setup()
+      require("gitsigns").setup()
+
+      require("todo-comments").setup()
+      vim.keymap.set("n", "<space>pt", "<cmd>TodoTelescope<cr>")
+
     '';
 }

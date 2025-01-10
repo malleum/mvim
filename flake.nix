@@ -13,8 +13,13 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
-      perSystem = {pkgs, ...}: let
-        modules = import ./. {inherit pkgs;};
+      perSystem = {
+        pkgs,
+        lib,
+        inputs,
+        ...
+      }: let
+        modules = import ./. {inherit pkgs lib inputs;};
         mvim = pkgs.neovim.override {
           viAlias = true;
           configure = {

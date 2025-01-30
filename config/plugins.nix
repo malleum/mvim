@@ -29,6 +29,5 @@
 
       require("todo-comments").setup()
       vim.keymap.set("n", "<space>pt", "<cmd>TodoTelescope<cr>")
-
     '';
 }
